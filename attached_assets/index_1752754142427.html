@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="zh-TW">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>FRC 10390</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background-color: #f4f4f4;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            /* Header */
+            header {
+                background-color: #2c3e50;
+                color: white;
+                padding: 1rem 0;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+
+            .header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+                font-weight: bold;
+                color: #3498db;
+            }
+
+            .mobile-menu-btn {
+                display: none;
+                background: none;
+                border: none;
+                color: white;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+            nav ul {
+                display: flex;
+                list-style: none;
+                gap: 2rem;
+            }
+
+            nav a {
+                color: white;
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+            nav a:hover {
+                color: #3498db;
+            }
+
+            /* Hero Section */
+            .hero {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 4rem 0;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+                margin-bottom: 2rem;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .cta-button {
+                display: inline-block;
+                background-color: #e74c3c;
+                color: white;
+                padding: 12px 30px;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+                transition: background-color 0.3s ease;
+            }
+
+            .cta-button:hover {
+                background-color: #c0392b;
+            }
+
+            /* Main Content */
+            .main-content {
+                background-color: white;
+                margin: 2rem 0;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }
+
+            .content-section {
+                padding: 2rem;
+            }
+
+            .content-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                margin-top: 2rem;
+            }
+
+            .content-card {
+                background-color: #f8f9fa;
+                padding: 1.5rem;
+                border-radius: 8px;
+                border-left: 4px solid #3498db;
+                transition: transform 0.3s ease;
+            }
+
+            .content-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .content-card h3 {
+                color: #2c3e50;
+                margin-bottom: 1rem;
+            }
+
+            .content-card img {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                border-radius: 5px;
+                margin-bottom: 1rem;
+            }
+
+            .content-card p {
+                margin-bottom: 1rem;
+                color: #555;
+            }
+
+            .card-button {
+                background-color: #3498db;
+                color: white;
+                padding: 8px 16px;
+                text-decoration: none;
+                border-radius: 4px;
+                font-size: 0.9rem;
+                transition: background-color 0.3s ease;
+            }
+
+            .card-button:hover {
+                background-color: #2980b9;
+            }
+
+            /* News Section */
+            .news-section {
+                background-color: #ecf0f1;
+                padding: 2rem;
+            }
+
+            .news-item {
+                background-color: white;
+                margin-bottom: 1.5rem;
+                padding: 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }
+
+            .news-item h4 {
+                color: #2c3e50;
+                margin-bottom: 0.5rem;
+            }
+
+            .news-date {
+                color: #7f8c8d;
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+
+            .news-item img {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+                border-radius: 5px;
+                float: left;
+                margin-right: 1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            /* Footer */
+            footer {
+                background-color: #2c3e50;
+                color: white;
+                padding: 2rem 0;
+                text-align: center;
+            }
+
+            .footer-content {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .footer-section h4 {
+                color: #3498db;
+                margin-bottom: 1rem;
+            }
+
+            .footer-section a {
+                color: #bdc3c7;
+                text-decoration: none;
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            .footer-section a:hover {
+                color: #3498db;
+            }
+
+            /* Loading animation */
+            .loading {
+                opacity: 0;
+                animation: fadeIn 0.6s ease-in-out forwards;
+            }
+
+            @keyframes fadeIn {
+                to {
+                    opacity: 1;
+                }
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .mobile-menu-btn {
+                    display: block;
+                }
+
+                .header-content {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                nav ul {
+                    flex-direction: column;
+                    gap: 1rem;
+                    width: 100%;
+                    display: none;
+                    background-color: #2c3e50;
+                    padding: 1rem 0;
+                    margin-top: 1rem;
+                }
+
+                nav ul.show {
+                    display: flex;
+                }
+
+                .hero h1 {
+                    font-size: 2rem;
+                }
+
+                .content-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .news-item img {
+                    float: none;
+                    width: 100%;
+                    height: 200px;
+                    margin-bottom: 1rem;
+                }
+
+                .container {
+                    padding: 0 15px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .hero {
+                    padding: 2rem 0;
+                }
+
+                .hero h1 {
+                    font-size: 1.8rem;
+                }
+
+                .hero p {
+                    font-size: 1rem;
+                }
+
+                .content-section {
+                    padding: 1rem;
+                }
+
+                .news-section {
+                    padding: 1rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">FRC 10390</div>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        ☰
+                    </button>
+                    <nav>
+                        <ul id="navMenu">
+                            <li><a href="#home">首頁</a></li>
+                            <li><a href="#about">關於我們</a></li>
+                            <li><a href="#news">最新消息</a></li>
+                            <li><a href="#contact">聯絡我們</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <section class="hero loading" id="home">
+            <div class="container">
+                <h1>我們是FRC team #10390！</h1>
+                <p>
+                    GOOGIRL 於2024年09月14日創立，2025年3月開始參賽。 隊名
+                    GOOGIRL
+                    結合"GOOD"和"GIRL"代表我們希望成為一群優秀的女孩，同時我們也是全世界少數的全女生隊伍。
+                </p>
+                <a href="#about" class="cta-button">了解更多</a>
+            </div>
+        </section>
+
+        <div class="container">
+            <main class="main-content loading">
+                <section class="content-section" id="about">
+                    <h2>關於我們</h2>
+
+                    <div class="content-grid">
+                        <div class="content-card">
+                            <img
+                                src="C:\Users\GameBot\Downloads\FRC招生說明會 2025.05.20 的複本.png"
+                                alt="團隊精神"
+                                loading="lazy"
+                            />
+                            <h3>團隊組成</h3>
+                            <p>
+                                我們相信團隊合作的力量，每個成員都是獨特的，共同創造出色的成果。
+                            </p>
+                            <a href="#" class="card-button">了解更多</a>
+                        </div>
+
+                        <div class="content-card">
+                            <img
+                                src="C:\Users\GameBot\Pictures\Screenshots\螢幕擷取畫面 2025-07-17 194236.png"
+                                alt="創新思維"
+                                loading="lazy"
+                            />
+                            <h3>Sponsors</h3>
+                            <p>
+                                感謝所有贊助商，也歡迎更多廠商找我們洽談!
+                            </p>
+                            <a href="#" class="card-button">了解更多</a>
+                        </div>
+
+                        <div class="content-card">
+                            <img
+                                src="C:\Users\GameBot\Downloads\FRC招生說明會 2025.05.20 的複本 (1).png"
+                                alt="專業技能"
+                                loading="lazy"
+                            />
+                            <h3>Award</h3>
+                            <p> 參閱我們目前的官方認證成就成果
+                                2025 REEFSCAPE 世界排名 892/1946
+                                New Tipei City Regional Rank 18/37
+                                San Francisco RegionalRookie All-Star AwardRank 39/41
+                            </p>
+                            <a href="#" class="card-button">了解更多</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="news-section" id="news">
+                    <h2>更多消息</h2>
+
+                    <div class="news-item">
+                        <img
+                            src="C:\Users\GameBot\Pictures\Screenshots\螢幕擷取畫面 2025-07-17 192847.png"
+                            alt="新聞圖片"
+                            loading="lazy"
+                        />
+                        <h4>加入我們的團隊！</h4>
+                        <div class="news-date">2025年7月15日</div>
+                        <p>
+                            我們正在尋找有才能和熱枕的新女性成員加入我們的團隊。如果您對我們在做的感興趣，歡迎聯繫我們。
+                        </p>
+                        <a href="#" class="card-button">閱讀更多</a>
+                    </div>
+
+                    <div class="news-item">
+                        <img
+                            src="C:\Users\GameBot\Pictures\Screenshots\螢幕擷取畫面 2025-07-17 194236.png"
+                            alt="新聞圖片"
+                            loading="lazy"
+                        />
+                        <h4>活動安排</h4>
+                        <div class="news-date">2025年7月10日</div>
+                        <p>
+                            季後  5-8月
+                            季後賽  8/21-8/23
+                            準備期   8-隔年1月
+                            賽季  1-4月
+                            區域賽
+                            休士頓總決賽
+                        </p>
+                        <a href="#" class="card-button">閱讀更多</a>
+                    </div>
+
+                    <div class="news-item">
+                        <img
+                            src="C:\Users\GameBot\Pictures\Screenshots\螢幕擷取畫面 2025-07-17 194236.png"
+                            alt="新聞圖片"
+                            loading="lazy"
+                        />
+                        <h4>我們製作的產品</h4>
+                        <div class="news-date">2025年7月5日</div>
+                        <p>
+                           一些可免費換取或有興趣也歡迎購買的團隊產品!
+                        </p>
+                        <a href="#" class="card-button">閱讀更多</a>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <footer id="contact">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4>聯絡資訊</h4>
+                        <p>地址：台中市北區中清路一段606號</p>
+                        <p>電話：(04) 2292 1175</p>
+                        <p>Email：smgshfrc@gmail.com</p>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4>快速連結</h4>
+                        <a href="#home">首頁</a>
+                        <a href="#about">關於我們</a>
+                        <a href="#news">最新消息</a>
+                        <a href="#contact">聯絡我們</a>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4>社群媒體</h4>
+                        <a
+                            href="https://www.instagram.com/frc_10390_googirl/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >Facebook</a
+                        >
+                        <a
+                            href="https://www.instagram.com/frc_10390_googirl/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >Instagram</a
+                        >
+                       
+                    </div>
+                </div>
+
+                <div
+                    style="
+                        border-top: 1px solid #34495e;
+                        padding-top: 1rem;
+                        margin-top: 1rem;
+                    "
+                >
+                    <p>&copy; 加入GOOGIRL 
+妳將會有與眾不同的高中生活</p>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            // DOM Content Loaded Event
+            document.addEventListener("DOMContentLoaded", function () {
+                // Initialize all functionality
+                initSmoothScrolling();
+                initMobileMenu();
+                initLoadingAnimations();
+                initImageLazyLoading();
+            });
+
+            // Smooth scrolling functionality
+            function initSmoothScrolling() {
+                document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                    anchor.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute("href");
+                        const target = document.querySelector(targetId);
+
+                        if (target) {
+                            const headerHeight =
+                                document.querySelector("header").offsetHeight;
+                            const targetPosition =
+                                target.offsetTop - headerHeight;
+
+                            window.scrollTo({
+                                top: targetPosition,
+                                behavior: "smooth",
+                            });
+
+                            // Close mobile menu if open
+                            const navMenu = document.getElementById("navMenu");
+                            if (navMenu.classList.contains("show")) {
+                                navMenu.classList.remove("show");
+                            }
+                        }
+                    });
+                });
+            }
+
+            // Mobile menu functionality
+            function initMobileMenu() {
+                const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+                const navMenu = document.getElementById("navMenu");
+
+                if (mobileMenuBtn && navMenu) {
+                    mobileMenuBtn.addEventListener("click", function () {
+                        navMenu.classList.toggle("show");
+
+                        // Update button icon
+                        this.textContent = navMenu.classList.contains("show")
+                            ? "✕"
+                            : "☰";
+                    });
+
+                    // Close menu when clicking outside
+                    document.addEventListener("click", function (e) {
+                        if (
+                            !mobileMenuBtn.contains(e.target) &&
+                            !navMenu.contains(e.target)
+                        ) {
+                            navMenu.classList.remove("show");
+                            mobileMenuBtn.textContent = "☰";
+                        }
+                    });
+
+                    // Close menu on window resize
+                    window.addEventListener("resize", function () {
+                        if (window.innerWidth > 768) {
+                            navMenu.classList.remove("show");
+                            mobileMenuBtn.textContent = "☰";
+                        }
+                    });
+                }
+            }
+
+            // Loading animations
+            function initLoadingAnimations() {
+                const loadingElements = document.querySelectorAll(".loading");
+
+                // Trigger animations after a short delay
+                setTimeout(() => {
+                    loadingElements.forEach((element) => {
+                        element.style.opacity = "1";
+                    });
+                }, 100);
+            }
+
+            // Lazy loading for images
+            function initImageLazyLoading() {
+                const images = document.querySelectorAll('img[loading="lazy"]');
+
+                if ("IntersectionObserver" in window) {
+                    const imageObserver = new IntersectionObserver(
+                        (entries, observer) => {
+                            entries.forEach((entry) => {
+                                if (entry.isIntersecting) {
+                                    const img = entry.target;
+                                    img.classList.add("loading");
+                                    observer.unobserve(img);
+                                }
+                            });
+                        },
+                    );
+
+                    images.forEach((img) => imageObserver.observe(img));
+                }
+            }
+
+            // Add scroll effect to header
+            window.addEventListener("scroll", function () {
+                const header = document.querySelector("header");
+                if (window.scrollY > 100) {
+                    header.style.backgroundColor = "rgba(44, 62, 80, 0.95)";
+                    header.style.backdropFilter = "blur(10px)";
+                } else {
+                    header.style.backgroundColor = "#2c3e50";
+                    header.style.backdropFilter = "none";
+                }
+            });
+
+            // Add click feedback for buttons
+            document
+                .querySelectorAll(".card-button, .cta-button")
+                .forEach((button) => {
+                    button.addEventListener("click", function (e) {
+                        // Create ripple effect
+                        const ripple = document.createElement("span");
+                        const rect = this.getBoundingClientRect();
+                        const size = Math.max(rect.width, rect.height);
+                        const x = e.clientX - rect.left - size / 2;
+                        const y = e.clientY - rect.top - size / 2;
+
+                        ripple.style.width = ripple.style.height = size + "px";
+                        ripple.style.left = x + "px";
+                        ripple.style.top = y + "px";
+                        ripple.style.position = "absolute";
+                        ripple.style.borderRadius = "50%";
+                        ripple.style.background = "rgba(255,255,255,0.3)";
+                        ripple.style.transform = "scale(0)";
+                        ripple.style.animation = "ripple 0.6s linear";
+                        ripple.style.pointerEvents = "none";
+
+                        this.style.position = "relative";
+                        this.style.overflow = "hidden";
+                        this.appendChild(ripple);
+
+                        setTimeout(() => {
+                            ripple.remove();
+                        }, 600);
+                    });
+                });
+
+            // Add ripple animation CSS
+            const style = document.createElement("style");
+            style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+            document.head.appendChild(style);
+
+            // Error handling for images
+            document.querySelectorAll("img").forEach((img) => {
+                img.addEventListener("error", function () {
+                    this.style.backgroundColor = "#f0f0f0";
+                    this.style.display = "flex";
+                    this.style.alignItems = "center";
+                    this.style.justifyContent = "center";
+                    this.innerHTML =
+                        '<span style="color: #999;">圖片載入失敗</span>';
+                });
+            });
+
+            // Performance optimization: throttle scroll events
+            function throttle(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            // Apply throttling to scroll events
+            window.addEventListener(
+                "scroll",
+                throttle(function () {
+                    // Any scroll-based functionality can be added here
+                }, 16),
+            ); // ~60fps
+        </script>
+    </body>
+</html>
