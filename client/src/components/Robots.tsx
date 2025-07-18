@@ -113,7 +113,7 @@ export function Robots() {
           {/* Robot */}
           <div className="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
             <img
-              src="C:\Users\GameBot\Pictures\Screenshots\螢幕擷取畫面 2025-07-18 223315.png"src="/src/assets/images/robot.jpg"
+              src="/src/assets/images/robot.png"
               alt="2025 Robot"
               className="w-full h-48 object-cover"
             />
@@ -165,7 +165,7 @@ export function Robots() {
           {/* Future Projects */}
           <div className="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
             <img
-              src="/src/assets/images/future.jpg"
+              src="/src/assets/images/future.png"
               alt="Future Projects"
               className="w-full h-48 object-cover"
             />
