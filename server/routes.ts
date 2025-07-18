@@ -1,6 +1,7 @@
 import type { Express } from "express";
-import express from "express";
 import { createServer, type Server } from "http";
+import multer from "multer";
+import path from "path";
 import { storage } from "./storage";
 import { 
   insertContactSchema, 
@@ -14,7 +15,37 @@ import {
 // Simple admin password - in production, use environment variables
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "FRC10390admin";
 
+// Configure multer for file uploads
+const storage_config = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const fileFilter = (req: any, file: any, cb: any) => {
+  // 只允許圖片和影片檔案
+  if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('只允許上傳圖片或影片檔案！'), false);
+  }
+};
+
+const upload = multer({ 
+  storage: storage_config,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 50 * 1024 * 1024 // 50MB limit
+  }
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve uploaded files statically
+  app.use('/uploads', express.static('uploads'));
   // Contact form submission route
   app.post("/api/contact", async (req, res) => {
     try {
@@ -230,6 +261,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       await storage.deleteAward(id);
       res.json({ success: true, message: "Award deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // File upload endpoint
+  app.post("/api/upload", requireAdmin, upload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: '未選擇檔案' });
+      }
+      
+      const fileUrl = `/uploads/${req.file.filename}`;
+      res.json({ 
+        success: true, 
+        url: fileUrl,
+        originalName: req.file.originalname,
+        size: req.file.size,
+        mimetype: req.file.mimetype
+      });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
