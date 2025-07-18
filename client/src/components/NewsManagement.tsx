@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Edit, Trash2, Image, Calendar, Eye } from 'lucide-react';
+import { Plus, Edit, Trash2, Image, Calendar, Eye, Upload } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import { useToast } from '../hooks/use-toast';
 import { NewsModal } from './NewsModal';
@@ -31,6 +31,8 @@ export function NewsManagement() {
   
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<NewsFormData>({
     title: '',
     titleEn: '',
@@ -148,6 +150,66 @@ export function NewsManagement() {
     setSelectedNews(null);
   };
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // 只允許圖片檔案
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: t('zh') === 'zh' ? '錯誤' : 'Error',
+        description: t('zh') === 'zh' ? '只允許上傳圖片檔案！' : 'Only image files are allowed!',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+
+      const authToken = localStorage.getItem('adminToken');
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: uploadFormData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
+
+      const result = await response.json();
+      
+      // 自動填入圖片URL
+      setFormData(prev => ({
+        ...prev,
+        imageUrl: result.url,
+      }));
+
+      toast({
+        title: t('zh') === 'zh' ? '成功' : 'Success',
+        description: t('zh') === 'zh' ? '圖片上傳成功！' : 'Image uploaded successfully!',
+      });
+    } catch (error: any) {
+      toast({
+        title: t('zh') === 'zh' ? '錯誤' : 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="p-6">
@@ -222,13 +284,43 @@ export function NewsManagement() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {t('zh') === 'zh' ? '圖片網址（選填）' : 'Image URL (Optional)'}
                   </label>
+                  <div className="flex space-x-2">
+                    <input
+                      type="url"
+                      value={formData.imageUrl}
+                      onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
+                      placeholder={t('zh') === 'zh' ? '請輸入圖片網址或上傳檔案' : 'Enter image URL or upload file'}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploading}
+                      className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center"
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      {isUploading ? 
+                        (t('zh') === 'zh' ? '上傳中...' : 'Uploading...') :
+                        (t('zh') === 'zh' ? '上傳圖片' : 'Upload Image')
+                      }
+                    </button>
+                  </div>
                   <input
-                    type="url"
-                    value={formData.imageUrl}
-                    onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
-                    placeholder="https://example.com/image.jpg"
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
                   />
+                  {formData.imageUrl && (
+                    <div className="mt-2">
+                      <img 
+                        src={formData.imageUrl} 
+                        alt="Preview" 
+                        className="w-32 h-32 object-cover rounded-md border"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div>
