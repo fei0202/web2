@@ -1,4 +1,5 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
@@ -61,7 +62,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/login", async (req, res) => {
     try {
       const { password } = req.body;
-      
+
       if (password === ADMIN_PASSWORD) {
         // In a real application, you would use proper session management
         // For now, we'll just return a simple token
@@ -81,7 +82,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'Authentication required' });
     }
-    
+
     const token = authHeader.substring(7);
     try {
       const decoded = Buffer.from(token, 'base64').toString();
@@ -272,7 +273,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!req.file) {
         return res.status(400).json({ error: '未選擇檔案' });
       }
-      
+
       const fileUrl = `/uploads/${req.file.filename}`;
       res.json({ 
         success: true, 
