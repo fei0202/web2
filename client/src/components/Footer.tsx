@@ -88,8 +88,8 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">
-                  {t('newsMedia', content.footer)}
+                <a href="/admin" className="text-gray-300 hover:text-white transition-colors duration-300">
+                  {t('zh') === 'zh' ? '管理後台' : 'Admin Panel'}
                 </a>
               </li>
               <li>

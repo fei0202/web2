@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { Mail, MapPin, Phone, Send } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import { content } from '../data/content';
+import { useMutation } from '@tanstack/react-query';
+import { useToast } from '../hooks/use-toast';
 
 export function Contact() {
   const { t } = useLanguage();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,11 +15,41 @@ export function Contact() {
     message: ''
   });
 
+  const submitContactMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit contact form');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: t('zh') === 'zh' ? '訊息已送出' : 'Message Sent',
+        description: t('zh') === 'zh' ? '感謝您的聯絡！我們會盡快回覆您。' : 'Thank you for contacting us! We will reply to you soon.',
+      });
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    },
+    onError: () => {
+      toast({
+        title: t('zh') === 'zh' ? '發送失敗' : 'Send Failed',
+        description: t('zh') === 'zh' ? '訊息發送失敗，請稍後再試。' : 'Failed to send message, please try again later.',
+        variant: 'destructive',
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    alert(t('zh') === 'zh' ? '訊息已送出，感謝您的聯絡！' : 'Message sent, thank you for contacting us!');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    submitContactMutation.mutate(formData);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -153,10 +186,18 @@ export function Contact() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-secondary hover:bg-blue-600 text-white py-3 px-6 rounded-md font-medium transition-colors duration-300 flex items-center justify-center"
+                disabled={submitContactMutation.isPending}
+                className="w-full bg-secondary hover:bg-blue-600 disabled:bg-gray-400 text-white py-3 px-6 rounded-md font-medium transition-colors duration-300 flex items-center justify-center"
               >
-                <Send className="w-4 h-4 mr-2" />
-                {t('sendMessage', content.contact)}
+                {submitContactMutation.isPending ? (
+                  <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4 mr-2" />
+                )}
+                {submitContactMutation.isPending 
+                  ? (t('zh') === 'zh' ? '發送中...' : 'Sending...')
+                  : t('sendMessage', content.contact)
+                }
               </button>
             </form>
           </div>
