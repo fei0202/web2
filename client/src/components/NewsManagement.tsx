@@ -75,7 +75,7 @@ export function NewsManagement() {
       setFormData({ title: '', titleEn: '', content: '', contentEn: '', imageUrl: '' });
       toast({
         title: t('zh') === 'zh' ? '成功' : 'Success',
-        description: t('zh') === 'zh' ? '新聞已成功創建' : 'News created successfully',
+        description: t('zh') === 'zh' ? '新消息已成功創建' : 'News created successfully',
       });
     },
     onError: (error: Error) => {
@@ -108,7 +108,7 @@ export function NewsManagement() {
       queryClient.invalidateQueries({ queryKey: ['/api/news'] });
       toast({
         title: t('zh') === 'zh' ? '成功' : 'Success',
-        description: t('zh') === 'zh' ? '新聞已成功刪除' : 'News deleted successfully',
+        description: t('zh') === 'zh' ? '新消息已成功刪除' : 'News deleted successfully',
       });
     },
     onError: (error: Error) => {
@@ -135,7 +135,7 @@ export function NewsManagement() {
   };
 
   const handleDelete = (newsId: number) => {
-    if (window.confirm(t('zh') === 'zh' ? '確定要刪除這則新聞嗎？' : 'Are you sure you want to delete this news?')) {
+    if (window.confirm(t('zh') === 'zh' ? '確定要刪除這則消息嗎？' : 'Are you sure you want to delete this news?')) {
       deleteNewsMutation.mutate(newsId);
     }
   };
@@ -168,14 +168,14 @@ export function NewsManagement() {
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-gray-900">
-            {t('zh') === 'zh' ? '新聞管理' : 'News Management'}
+            {t('zh') === 'zh' ? '消息管理' : 'News Management'}
           </h2>
           <button
             onClick={() => setIsFormOpen(true)}
             className="flex items-center px-4 py-2 bg-secondary text-white rounded-md hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            {t('zh') === 'zh' ? '新增新聞' : 'Add News'}
+            {t('zh') === 'zh' ? '新增消息' : 'Add News'}
           </button>
         </div>
 
@@ -185,7 +185,7 @@ export function NewsManagement() {
             <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b">
                 <h3 className="text-lg font-semibold">
-                  {t('zh') === 'zh' ? '新增新聞' : 'Add News'}
+                  {t('zh') === 'zh' ? '新增消息' : 'Add News'}
                 </h3>
               </div>
               
