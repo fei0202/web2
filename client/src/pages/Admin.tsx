@@ -5,6 +5,7 @@ import { useLanguage } from '../hooks/useLanguage';
 import { Link } from 'wouter';
 import { AdminLogin } from '../components/AdminLogin';
 import { NewsManagement } from '../components/NewsManagement';
+import { MediaManagement } from '../components/MediaManagement';
 
 interface Contact {
   id: number;
@@ -21,7 +22,7 @@ export function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [loginError, setLoginError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'contacts' | 'news'>('contacts');
+  const [activeTab, setActiveTab] = useState<'contacts' | 'news' | 'media' | 'robots' | 'team' | 'awards'>('contacts');
 
   // Check for existing auth token on mount
   useEffect(() => {
@@ -41,12 +42,12 @@ export function Admin() {
         },
         body: JSON.stringify({ password }),
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Login failed');
       }
-      
+
       return response.json();
     },
     onSuccess: (data) => {
@@ -195,6 +196,58 @@ export function Admin() {
                 {t('zh') === 'zh' ? '新聞管理' : 'News Management'}
               </div>
             </button>
+             <button
+              onClick={() => setActiveTab('media')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'media'
+                  ? 'border-secondary text-secondary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center">
+                <Newspaper className="w-5 h-5 mr-2" />
+                {t('zh') === 'zh' ? '媒體管理' : 'Media Management'}
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('robots')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'robots'
+                  ? 'border-secondary text-secondary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center">
+                <Newspaper className="w-5 h-5 mr-2" />
+                {t('zh') === 'zh' ? '機器人管理' : 'Robot Management'}
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('team')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'team'
+                  ? 'border-secondary text-secondary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center">
+                <Newspaper className="w-5 h-5 mr-2" />
+                {t('zh') === 'zh' ? '團隊管理' : 'Team Management'}
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('awards')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'awards'
+                  ? 'border-secondary text-secondary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center">
+                <Newspaper className="w-5 h-5 mr-2" />
+                {t('zh') === 'zh' ? '獎項管理' : 'Awards Management'}
+              </div>
+            </button>
           </nav>
         </div>
       </div>
@@ -322,8 +375,16 @@ export function Admin() {
           </div>
         </div>
           </>
-        ) : (
+        ) : activeTab === 'news' ? (
           <NewsManagement />
+        ) : activeTab === 'media' ? (
+          <MediaManagement />
+        ) : activeTab === 'robots' ? (
+           <div className="p-6 text-center text-gray-500">機器人管理功能開發中...</div>
+        ) : activeTab === 'team' ? (
+           <div className="p-6 text-center text-gray-500">團隊管理功能開發中...</div>
+        ) : (
+           <div className="p-6 text-center text-gray-500">獎項管理功能開發中...</div>
         )}
       </div>
     </div>

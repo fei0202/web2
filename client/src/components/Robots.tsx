@@ -1,56 +1,107 @@
 import { useState } from "react";
-import { Bot, Settings, Zap } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Bot, Settings, Zap, Calendar } from "lucide-react";
 import { Modal } from "./Modal";
 import { useLanguage } from "../hooks/useLanguage";
 import { content } from "../data/content";
+
+interface Robot {
+  id: number;
+  year: number;
+  name: string;
+  nameEn: string;
+  description: string;
+  descriptionEn: string;
+  imageUrl?: string;
+  specifications?: string;
+  specificationsEn?: string;
+}
 
 export function Robots() {
   const { t } = useLanguage();
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
+  const { data: robots } = useQuery<Robot[]>({
+    queryKey: ['/api/robots'],
+    queryFn: async () => {
+      const response = await fetch('/api/robots');
+      if (!response.ok) {
+        throw new Error('Failed to fetch robots');
+      }
+      return response.json();
+    },
+  });
+
   const Robot2025Modal = () => (
     <Modal
-      isOpen={activeModal === "歷年"}
+      isOpen={activeModal === "2025"}
       onClose={() => setActiveModal(null)}
-      title={t("zh") === "zh" ? "我們的機器人" : "Our Robot"}
+      title={t("zh") === "zh" ? "我們的機器人" : "Our Robots"}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <img
-            src="https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
-            alt="2025 Robot detailed view"
-            className="w-full rounded-lg"
-          />
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold mb-4">
-            {t("zh") === "zh" ? "技術規格" : "Technical Specifications"}
-          </h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span>{t("zh") === "zh" ? "重量" : "Weight"}</span>
-              <span>125 lbs</span>
-            </div>
-            <div className="flex justify-between">
-              <span>{t("zh") === "zh" ? "尺寸" : "Dimensions"}</span>
-              <span>28" x 38" x 48"</span>
-            </div>
-            <div className="flex justify-between">
-              <span>{t("zh") === "zh" ? "驅動系統" : "Drive System"}</span>
-              <span>6-Wheel Tank Drive</span>
-            </div>
-            <div className="flex justify-between">
-              <span>{t("zh") === "zh" ? "控制系統" : "Control System"}</span>
-              <span>RoboRIO 2.0</span>
-            </div>
-            <div className="flex justify-between">
-              <span>
-                {t("zh") === "zh" ? "程式語言" : "Programming Language"}
-              </span>
-              <span>Java</span>
-            </div>
+      <div className="space-y-6">
+        {(!robots || robots.length === 0) ? (
+          <div className="text-center py-8">
+            <Bot className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500">
+              {t("zh") === "zh" ? "尚無機器人資料" : "No robot data available"}
+            </p>
           </div>
-        </div>
+        ) : (
+          robots
+            .sort((a, b) => b.year - a.year)
+            .map((robot) => (
+              <div key={robot.id} className="border rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  <Calendar className="w-5 h-5 text-secondary mr-2" />
+                  <h3 className="text-lg font-semibold text-secondary">
+                    {robot.year} - {t("zh") === "zh" ? robot.name : robot.nameEn}
+                  </h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    {robot.imageUrl ? (
+                      <img
+                        src={robot.imageUrl}
+                        alt={robot.name}
+                        className="w-full rounded-lg object-cover aspect-video"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling!.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <div className="w-full aspect-video bg-gray-100 rounded-lg items-center justify-center hidden">
+                      <Bot className="w-12 h-12 text-gray-400" />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold mb-2">
+                      {t("zh") === "zh" ? "機器人描述" : "Robot Description"}
+                    </h4>
+                    <p className="text-gray-600 text-sm mb-4">
+                      {t("zh") === "zh" ? robot.description : robot.descriptionEn}
+                    </p>
+                    
+                    {robot.specifications && (
+                      <>
+                        <h4 className="font-semibold mb-2">
+                          {t("zh") === "zh" ? "技術規格" : "Technical Specifications"}
+                        </h4>
+                        <div className="text-sm text-gray-600">
+                          <pre className="whitespace-pre-wrap font-sans">
+                            {t("zh") === "zh" ? robot.specifications : (robot.specificationsEn || robot.specifications)}
+                          </pre>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+        )}
       </div>
     </Modal>
   );

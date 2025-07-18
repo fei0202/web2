@@ -1,7 +1,14 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSchema, insertNewsSchema } from "@shared/schema";
+import { 
+  insertContactSchema, 
+  insertNewsSchema,
+  insertMediaSchema,
+  insertRobotSchema,
+  insertTeamMemberSchema,
+  insertAwardSchema
+} from "@shared/schema";
 
 // Simple admin password - in production, use environment variables
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "FRC10390admin";
@@ -91,6 +98,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       await storage.deleteNews(id);
       res.json({ success: true, message: "News deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Media routes
+  app.post("/api/media", requireAdmin, async (req, res) => {
+    try {
+      const mediaData = insertMediaSchema.parse(req.body);
+      const media = await storage.createMedia(mediaData);
+      res.json({ success: true, message: "Media created successfully", media });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  });
+
+  app.get("/api/media", async (req, res) => {
+    try {
+      const category = req.query.category as string;
+      const media = await storage.getMedia(category);
+      res.json(media);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/media/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteMedia(id);
+      res.json({ success: true, message: "Media deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.put("/api/media/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const media = await storage.updateMedia(id, req.body);
+      res.json({ success: true, message: "Media updated successfully", media });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Robot routes
+  app.post("/api/robots", requireAdmin, async (req, res) => {
+    try {
+      const robotData = insertRobotSchema.parse(req.body);
+      const robot = await storage.createRobot(robotData);
+      res.json({ success: true, message: "Robot created successfully", robot });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  });
+
+  app.get("/api/robots", async (req, res) => {
+    try {
+      const robots = await storage.getRobots();
+      res.json(robots);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/robots/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteRobot(id);
+      res.json({ success: true, message: "Robot deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Team member routes
+  app.post("/api/team-members", requireAdmin, async (req, res) => {
+    try {
+      const memberData = insertTeamMemberSchema.parse(req.body);
+      const member = await storage.createTeamMember(memberData);
+      res.json({ success: true, message: "Team member created successfully", member });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  });
+
+  app.get("/api/team-members", async (req, res) => {
+    try {
+      const members = await storage.getTeamMembers();
+      res.json(members);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/team-members/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteTeamMember(id);
+      res.json({ success: true, message: "Team member deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Award routes
+  app.post("/api/awards", requireAdmin, async (req, res) => {
+    try {
+      const awardData = insertAwardSchema.parse(req.body);
+      const award = await storage.createAward(awardData);
+      res.json({ success: true, message: "Award created successfully", award });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  });
+
+  app.get("/api/awards", async (req, res) => {
+    try {
+      const awards = await storage.getAwards();
+      res.json(awards);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/awards/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteAward(id);
+      res.json({ success: true, message: "Award deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

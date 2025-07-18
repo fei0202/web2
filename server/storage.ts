@@ -1,67 +1,110 @@
-import { users, contacts, news, type User, type InsertUser, type Contact, type InsertContact, type News, type InsertNews } from "@shared/schema";
 import { db } from "./db";
+import { 
+  contacts, 
+  news, 
+  media, 
+  robots, 
+  teamMembers, 
+  awards,
+  insertContactSchema, 
+  insertNewsSchema,
+  insertMediaSchema,
+  insertRobotSchema,
+  insertTeamMemberSchema,
+  insertAwardSchema
+} from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 
-// modify the interface with any CRUD methods
-// you might need
-
-export interface IStorage {
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
-  createContact(contact: InsertContact): Promise<Contact>;
-  getContacts(): Promise<Contact[]>;
-  createNews(news: InsertNews): Promise<News>;
-  getNews(): Promise<News[]>;
-  deleteNews(id: number): Promise<void>;
-}
-
-export class DatabaseStorage implements IStorage {
-  async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(insertUser)
-      .returning();
-    return user;
-  }
-
-  async createContact(insertContact: InsertContact): Promise<Contact> {
-    const [contact] = await db
-      .insert(contacts)
-      .values(insertContact)
-      .returning();
+export const storage = {
+  async createContact(contactData: any) {
+    const validatedData = insertContactSchema.parse(contactData);
+    const [contact] = await db.insert(contacts).values(validatedData).returning();
     return contact;
-  }
+  },
 
-  async getContacts(): Promise<Contact[]> {
+  async getContacts() {
     return await db.select().from(contacts).orderBy(desc(contacts.createdAt));
-  }
+  },
 
-  async createNews(insertNews: InsertNews): Promise<News> {
-    const [newsItem] = await db
-      .insert(news)
-      .values(insertNews)
-      .returning();
+  async createNews(newsData: any) {
+    const validatedData = insertNewsSchema.parse(newsData);
+    const [newsItem] = await db.insert(news).values(validatedData).returning();
     return newsItem;
-  }
+  },
 
-  async getNews(): Promise<News[]> {
+  async getNews() {
     return await db.select().from(news).orderBy(desc(news.createdAt));
-  }
+  },
 
-  async deleteNews(id: number): Promise<void> {
+  async deleteNews(id: number) {
     await db.delete(news).where(eq(news.id, id));
-  }
-}
+  },
 
-export const storage = new DatabaseStorage();
+  // Media operations
+  async createMedia(mediaData: any) {
+    const validatedData = insertMediaSchema.parse(mediaData);
+    const [mediaItem] = await db.insert(media).values(validatedData).returning();
+    return mediaItem;
+  },
+
+  async getMedia(category?: string) {
+    if (category) {
+      return await db.select().from(media).where(eq(media.category, category)).orderBy(desc(media.createdAt));
+    }
+    return await db.select().from(media).orderBy(desc(media.createdAt));
+  },
+
+  async deleteMedia(id: number) {
+    await db.delete(media).where(eq(media.id, id));
+  },
+
+  async updateMedia(id: number, mediaData: any) {
+    const [updatedMedia] = await db.update(media).set(mediaData).where(eq(media.id, id)).returning();
+    return updatedMedia;
+  },
+
+  // Robot operations
+  async createRobot(robotData: any) {
+    const validatedData = insertRobotSchema.parse(robotData);
+    const [robot] = await db.insert(robots).values(validatedData).returning();
+    return robot;
+  },
+
+  async getRobots() {
+    return await db.select().from(robots).orderBy(desc(robots.year));
+  },
+
+  async deleteRobot(id: number) {
+    await db.delete(robots).where(eq(robots.id, id));
+  },
+
+  // Team member operations
+  async createTeamMember(memberData: any) {
+    const validatedData = insertTeamMemberSchema.parse(memberData);
+    const [member] = await db.insert(teamMembers).values(validatedData).returning();
+    return member;
+  },
+
+  async getTeamMembers() {
+    return await db.select().from(teamMembers).orderBy(desc(teamMembers.year));
+  },
+
+  async deleteTeamMember(id: number) {
+    await db.delete(teamMembers).where(eq(teamMembers.id, id));
+  },
+
+  // Award operations
+  async createAward(awardData: any) {
+    const validatedData = insertAwardSchema.parse(awardData);
+    const [award] = await db.insert(awards).values(validatedData).returning();
+    return award;
+  },
+
+  async getAwards() {
+    return await db.select().from(awards).orderBy(desc(awards.year));
+  },
+
+  async deleteAward(id: number) {
+    await db.delete(awards).where(eq(awards.id, id));
+  },
+};

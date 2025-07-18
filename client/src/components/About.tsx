@@ -1,88 +1,123 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Users, Lightbulb, Award } from "lucide-react";
 import { Modal } from "./Modal";
 import { useLanguage } from "../hooks/useLanguage";
 import { content } from "../data/content";
 
+interface TeamMember {
+  id: number;
+  year: number;
+  name: string;
+  position: string;
+  positionEn: string;
+  category: string;
+  imageUrl?: string;
+  bio?: string;
+  bioEn?: string;
+}
+
 export function About() {
   const { t } = useLanguage();
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
-  const TeamModal = () => (
-    <Modal
-      isOpen={activeModal === "team"}
-      onClose={() => setActiveModal(null)}
-      title={t("teamComposition.title", content.about)}
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <img
-            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
-            alt="Team working together"
-            className="w-full rounded-lg"
-          />
+  const { data: teamMembers } = useQuery<TeamMember[]>({
+    queryKey: ['/api/team-members'],
+    queryFn: async () => {
+      const response = await fetch('/api/team-members');
+      if (!response.ok) {
+        throw new Error('Failed to fetch team members');
+      }
+      return response.json();
+    },
+  });
+
+  const TeamModal = () => {
+    const groupedMembers = teamMembers?.reduce((groups: Record<string, Record<string, TeamMember[]>>, member) => {
+      if (!groups[member.year]) {
+        groups[member.year] = {};
+      }
+      if (!groups[member.year][member.category]) {
+        groups[member.year][member.category] = [];
+      }
+      groups[member.year][member.category].push(member);
+      return groups;
+    }, {}) || {};
+
+    const getCategoryIcon = (category: string) => {
+      switch (category) {
+        case 'student': return t("zh") === "zh" ? "學" : "S";
+        case 'mentor': return t("zh") === "zh" ? "導" : "M";
+        case 'advisor': return t("zh") === "zh" ? "教" : "A";
+        default: return t("zh") === "zh" ? "員" : "M";
+      }
+    };
+
+    const getCategoryColor = (category: string) => {
+      switch (category) {
+        case 'student': return 'bg-secondary';
+        case 'mentor': return 'bg-accent';
+        case 'advisor': return 'bg-success';
+        default: return 'bg-gray-500';
+      }
+    };
+
+    return (
+      <Modal
+        isOpen={activeModal === "team"}
+        onClose={() => setActiveModal(null)}
+        title={t("teamComposition.title", content.about)}
+      >
+        <div className="space-y-6">
+          {Object.keys(groupedMembers).length === 0 ? (
+            <div className="text-center py-8">
+              <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500">
+                {t("zh") === "zh" ? "尚無團隊成員資料" : "No team members data available"}
+              </p>
+            </div>
+          ) : (
+            Object.entries(groupedMembers)
+              .sort(([a], [b]) => Number(b) - Number(a))
+              .map(([year, categories]) => (
+                <div key={year} className="border rounded-lg p-4">
+                  <h3 className="text-lg font-semibold mb-4 text-secondary">
+                    {year} {t("zh") === "zh" ? "年度團隊" : "Team"}
+                  </h3>
+                  <div className="space-y-4">
+                    {Object.entries(categories).map(([category, members]) => (
+                      <div key={category}>
+                        <h4 className="font-medium text-gray-800 mb-2">
+                          {t("zh") === "zh" ? 
+                            (category === 'student' ? '學生成員' : category === 'mentor' ? '指導導師' : '指導教授') :
+                            (category === 'student' ? 'Students' : category === 'mentor' ? 'Mentors' : 'Advisors')
+                          } ({members.length})
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {members.map((member) => (
+                            <div key={member.id} className="flex items-center p-2 border rounded-lg">
+                              <div className={`w-10 h-10 ${getCategoryColor(category)} rounded-full flex items-center justify-center text-white font-bold mr-3`}>
+                                {getCategoryIcon(category)}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium text-sm">{member.name}</div>
+                                <div className="text-xs text-gray-600 truncate">
+                                  {t("zh") === "zh" ? member.position : member.positionEn}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+          )}
         </div>
-        <div>
-          <h3 className="text-lg font-semibold mb-4">
-            {t("zh") === "zh" ? "團隊成員" : "Team Members"}
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold mr-3">
-                {t("zh") === "zh" ? "工" : "E"}
-              </div>
-              <div>
-                <div className="font-medium">
-                  {t("zh") === "zh"
-                    ? "工程組 (6人)"
-                    : "Engineering Team (6 members)"}
-                </div>
-                <div className="text-sm text-gray-600">
-                  {t("zh") === "zh"
-                    ? "機械設計、電路設計、程式開發"
-                    : "Mechanical Design, Circuit Design, Programming"}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-bold mr-3">
-                {t("zh") === "zh" ? "行" : "M"}
-              </div>
-              <div>
-                <div className="font-medium">
-                  {t("zh") === "zh"
-                    ? "行銷組 (4人)"
-                    : "Marketing Team (4 members)"}
-                </div>
-                <div className="text-sm text-gray-600">
-                  {t("zh") === "zh"
-                    ? "品牌推廣、社群媒體、活動企劃"
-                    : "Brand Promotion, Social Media, Event Planning"}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-success rounded-full flex items-center justify-center text-white font-bold mr-3">
-                {t("zh") === "zh" ? "管" : "P"}
-              </div>
-              <div>
-                <div className="font-medium">
-                  {t("zh") === "zh"
-                    ? "專案管理組 (3人)"
-                    : "Project Management (3 members)"}
-                </div>
-                <div className="text-sm text-gray-600">
-                  {t("zh") === "zh"
-                    ? "進度管控、資源分配、團隊協調"
-                    : "Progress Control, Resource Allocation, Team Coordination"}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Modal>
-  );
+      </Modal>
+    );
+  };
 
   const InnovationModal = () => (
     <Modal
