@@ -34,7 +34,7 @@ export function Header() {
               <span className="text-secondary">10390</span>
             </div>
             <div className="ml-2 text-sm text-gray-600 hidden sm:block">
-              {t("zh") === "zh" ? "TW All-Female Team" : "TW All-Female Team"}
+              {t("zh") === "zh" ? "TW 全女隊" : "TW All-Girls Robotics Team"}
             </div>
           </div>
 
