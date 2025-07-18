@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react';
+
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Edit, Trash2, Image, Video, Calendar, Eye, EyeOff, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Image, Video, Calendar, Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import { useToast } from '../hooks/use-toast';
 import { format } from 'date-fns';
@@ -33,12 +34,9 @@ export function MediaManagement() {
   const { t } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
+  
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [formData, setFormData] = useState<MediaFormData>({
     title: '',
     titleEn: '',
@@ -73,12 +71,12 @@ export function MediaManagement() {
         },
         body: JSON.stringify(mediaData),
       });
-
+      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to create media');
       }
-
+      
       return response.json();
     },
     onSuccess: () => {
@@ -111,12 +109,12 @@ export function MediaManagement() {
           'Authorization': `Bearer ${authToken}`,
         },
       });
-
+      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to delete media');
       }
-
+      
       return response.json();
     },
     onSuccess: () => {
@@ -146,12 +144,12 @@ export function MediaManagement() {
         },
         body: JSON.stringify({ isVisible }),
       });
-
+      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to update media');
       }
-
+      
       return response.json();
     },
     onSuccess: () => {
@@ -169,7 +167,7 @@ export function MediaManagement() {
       });
       return;
     }
-
+    
     createMediaMutation.mutate(formData);
   };
 
@@ -182,55 +180,6 @@ export function MediaManagement() {
   const toggleVisibility = (id: number, currentVisibility: boolean) => {
     toggleVisibilityMutation.mutate({ id, isVisible: !currentVisibility });
   };
-
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        setIsUploading(true);
-        setUploadProgress(0);
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-            const authToken = localStorage.getItem('adminToken');
-            const response = await fetch('/api/upload', { // Assuming you have an /api/upload endpoint
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-                body: formData,
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'File upload failed');
-            }
-
-            const result = await response.json();
-            setFormData(prev => ({ ...prev, url: result.url }));
-
-            toast({
-                title: t('zh') === 'zh' ? '成功' : 'Success',
-                description: t('zh') === 'zh' ? '檔案上傳成功' : 'File uploaded successfully',
-            });
-
-        } catch (error:any) {
-            toast({
-                title: t('zh') === 'zh' ? '錯誤' : 'Error',
-                description: error.message,
-                variant: 'destructive',
-            });
-        } finally {
-            setIsUploading(false);
-            setUploadProgress(0);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = ''; // Reset file input
-            }
-        }
-    };
-
 
   // Group media by date
   const groupedMedia = media?.reduce((groups: Record<string, MediaItem[]>, item) => {
@@ -309,7 +258,7 @@ export function MediaManagement() {
                 {t('zh') === 'zh' ? '新增媒體' : 'Add Media'}
               </h3>
             </div>
-
+            
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -324,7 +273,7 @@ export function MediaManagement() {
                     required
                   />
                 </div>
-
+                
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {t('zh') === 'zh' ? '標題（英文）' : 'Title (English)'}
@@ -386,52 +335,17 @@ export function MediaManagement() {
               </div>
 
               <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('zh') === 'zh' ? '媒體網址' : 'Media URL'}
-                  </label>
-                  <div className="flex space-x-2">
-                    <input
-                      type="url"
-                      value={formData.url}
-                      onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
-                      placeholder={t('zh') === 'zh' ? '請輸入媒體網址或上傳檔案' : 'Enter media URL or upload file'}
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={isUploading}
-                      className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center"
-                    >
-                      <Upload className="w-4 h-4 mr-2" />
-                      {isUploading ? 
-                        (t('zh') === 'zh' ? '上傳中...' : 'Uploading...') :
-                        (t('zh') === 'zh' ? '上傳檔案' : 'Upload File')
-                      }
-                    </button>
-                  </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*,video/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                  {isUploading && (
-                    <div className="mt-2">
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${uploadProgress}%` }}
-                        />
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {t('zh') === 'zh' ? '上傳中...' : 'Uploading...'}
-                      </p>
-                    </div>
-                  )}
-                </div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('zh') === 'zh' ? '媒體網址' : 'Media URL'}
+                </label>
+                <input
+                  type="url"
+                  value={formData.url}
+                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
+                  required
+                />
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -469,7 +383,7 @@ export function MediaManagement() {
                 </button>
                 <button
                   type="submit"
-                  disabled={createMediaMutation.isPending || isUploading}
+                  disabled={createMediaMutation.isPending}
                   className="px-4 py-2 bg-secondary text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
                 >
                   {createMediaMutation.isPending ? 
@@ -506,7 +420,7 @@ export function MediaManagement() {
                     <span className="ml-2 text-sm text-gray-500">({items.length} 項目)</span>
                   </h3>
                 </div>
-
+                
                 <div className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {items.map((item) => (
@@ -534,7 +448,7 @@ export function MediaManagement() {
                             )}
                           </div>
                         </div>
-
+                        
                         <div className="p-3">
                           <h4 className="font-medium text-sm text-gray-900 truncate">
                             {t('zh') === 'zh' ? item.title : item.titleEn}
@@ -542,7 +456,7 @@ export function MediaManagement() {
                           <p className="text-xs text-gray-500 mt-1">
                             {item.category} • {item.type}
                           </p>
-
+                          
                           <div className="flex items-center justify-between mt-3">
                             <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                               item.isVisible ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -552,7 +466,7 @@ export function MediaManagement() {
                                 (t('zh') === 'zh' ? '隱藏' : 'Hidden')
                               }
                             </span>
-
+                            
                             <div className="flex items-center space-x-1">
                               <button
                                 onClick={() => toggleVisibility(item.id, item.isVisible)}
