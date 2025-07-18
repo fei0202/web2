@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Mail, Calendar, User, MessageSquare, ArrowLeft } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { Mail, Calendar, User, MessageSquare, ArrowLeft, LogOut } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import { Link } from 'wouter';
+import { AdminLogin } from '../components/AdminLogin';
 
 interface Contact {
   id: number;
@@ -16,17 +17,87 @@ interface Contact {
 export function Admin() {
   const { t } = useLanguage();
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [loginError, setLoginError] = useState<string | null>(null);
+
+  // Check for existing auth token on mount
+  useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      setAuthToken(token);
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const loginMutation = useMutation({
+    mutationFn: async (password: string) => {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Login failed');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (data) => {
+      setAuthToken(data.token);
+      setIsAuthenticated(true);
+      setLoginError(null);
+      localStorage.setItem('adminToken', data.token);
+    },
+    onError: (error: Error) => {
+      setLoginError(
+        t('zh') === 'zh' ? '密碼錯誤，請重試' : 'Invalid password, please try again'
+      );
+    },
+  });
+
+  const handleLogin = async (password: string) => {
+    loginMutation.mutate(password);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setAuthToken(null);
+    setSelectedContact(null);
+    localStorage.removeItem('adminToken');
+  };
 
   const { data: contacts, isLoading, error } = useQuery<Contact[]>({
     queryKey: ['/api/contacts'],
     queryFn: async () => {
-      const response = await fetch('/api/contacts');
+      const response = await fetch('/api/contacts', {
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+        },
+      });
       if (!response.ok) {
+        if (response.status === 401) {
+          handleLogout();
+        }
         throw new Error('Failed to fetch contacts');
       }
       return response.json();
     },
+    enabled: isAuthenticated && !!authToken,
   });
+
+  if (!isAuthenticated) {
+    return (
+      <AdminLogin 
+        onLogin={handleLogin} 
+        error={loginError}
+      />
+    );
+  }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('zh-TW', {
@@ -81,6 +152,13 @@ export function Admin() {
             <h1 className="text-xl font-semibold text-primary">
               {t('zh') === 'zh' ? '聯絡訊息管理' : 'Contact Messages Admin'}
             </h1>
+            <button
+              onClick={handleLogout}
+              className="flex items-center text-gray-600 hover:text-red-600 transition-colors"
+            >
+              <LogOut className="w-5 h-5 mr-2" />
+              {t('zh') === 'zh' ? '登出' : 'Logout'}
+            </button>
           </div>
         </div>
       </div>

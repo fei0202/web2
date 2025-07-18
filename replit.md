@@ -92,6 +92,21 @@ The application follows a monorepo structure with clear separation between clien
 ### Environment Configuration
 - **DATABASE_URL**: PostgreSQL connection string (required)
 - **NODE_ENV**: Environment detection (development/production)
+- **ADMIN_PASSWORD**: Admin panel password (default: "FRC10390admin")
 - **Session Configuration**: Secure session management with database persistence
+
+## Recent Changes: Latest modifications with dates
+
+### 2025-07-18 - Database Integration and Security
+- **Database**: Added PostgreSQL database with Drizzle ORM
+- **Data Persistence**: Contact messages now stored in database permanently
+- **Admin Security**: Added password protection for admin panel (`/admin`)
+- **Authentication**: Simple token-based authentication system
+- **Default Password**: `FRC10390admin` (changeable via ADMIN_PASSWORD env var)
+
+### Visual and UX Improvements
+- **Language Toggle**: Enhanced visibility with darker background and border
+- **Hero Background**: Changed from gradient to photo with 50% opacity overlay
+- **Contact Form**: Added real-time submission with loading states and toast notifications
 
 The application is designed to be deployed on platforms like Replit, Vercel, or traditional hosting providers, with the database connection being the primary external dependency. The build process creates a self-contained application that can run as a single Node.js process.
