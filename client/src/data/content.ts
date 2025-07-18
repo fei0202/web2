@@ -19,7 +19,7 @@ export const content: ContentData = {
     joinUs: { zh: '加入我們', en: 'Join Us' }
   },
   about: {
-    title: { zh: '關於我們', en: 'About Us' },
+    title: { zh: '關於', en: 'About' },
     subtitle: { 
       zh: '我們是一個充滿熱情的全女生FRC機器人團隊，致力於推動STEM教育和女性在科技領域的參與。',
       en: 'We are a passionate all-female FRC robotics team dedicated to promoting STEM education and women\'s participation in technology.'
@@ -47,9 +47,9 @@ export const content: ContentData = {
     }
   },
   robots: {
-    title: { zh: '我們的機器人', en: 'Our Robots' },
+    title: { zh: 'FRC競賽', en: 'FRC' },
     subtitle: { 
-      zh: '探索我們歷年來設計和製造的機器人，見證我們的成長歷程。',
+      zh: '探索我們歷年的成長、了解比賽內容與我們的未來展望!',
       en: 'Explore the robots we\'ve designed and built over the years, witnessing our growth journey.'
     },
     robot2025: {
@@ -77,7 +77,7 @@ export const content: ContentData = {
   awards: {
     title: { zh: '獎項成就', en: 'Awards & Achievements' },
     subtitle: { 
-      zh: '參閱我們目前的官方認證成就成果',
+      zh: '目前我們獲得的官方認證成就成果',
       en: 'Review our current official certified achievements'
     },
     worldRanking: { zh: '世界排名', en: 'World Ranking' },

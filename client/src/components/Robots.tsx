@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Bot, Settings, Zap } from 'lucide-react';
-import { Modal } from './Modal';
-import { useLanguage } from '../hooks/useLanguage';
-import { content } from '../data/content';
+import { useState } from "react";
+import { Bot, Settings, Zap } from "lucide-react";
+import { Modal } from "./Modal";
+import { useLanguage } from "../hooks/useLanguage";
+import { content } from "../data/content";
 
 export function Robots() {
   const { t } = useLanguage();
@@ -10,9 +10,9 @@ export function Robots() {
 
   const Robot2025Modal = () => (
     <Modal
-      isOpen={activeModal === '2025'}
+      isOpen={activeModal === "歷年"}
       onClose={() => setActiveModal(null)}
-      title={t('zh') === 'zh' ? '2025 機器人詳細規格' : '2025 Robot Detailed Specifications'}
+      title={t("zh") === "zh" ? "我們的機器人" : "Our Robot"}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -24,27 +24,29 @@ export function Robots() {
         </div>
         <div>
           <h3 className="text-lg font-semibold mb-4">
-            {t('zh') === 'zh' ? '技術規格' : 'Technical Specifications'}
+            {t("zh") === "zh" ? "技術規格" : "Technical Specifications"}
           </h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span>{t('zh') === 'zh' ? '重量' : 'Weight'}</span>
+              <span>{t("zh") === "zh" ? "重量" : "Weight"}</span>
               <span>125 lbs</span>
             </div>
             <div className="flex justify-between">
-              <span>{t('zh') === 'zh' ? '尺寸' : 'Dimensions'}</span>
+              <span>{t("zh") === "zh" ? "尺寸" : "Dimensions"}</span>
               <span>28" x 38" x 48"</span>
             </div>
             <div className="flex justify-between">
-              <span>{t('zh') === 'zh' ? '驅動系統' : 'Drive System'}</span>
+              <span>{t("zh") === "zh" ? "驅動系統" : "Drive System"}</span>
               <span>6-Wheel Tank Drive</span>
             </div>
             <div className="flex justify-between">
-              <span>{t('zh') === 'zh' ? '控制系統' : 'Control System'}</span>
+              <span>{t("zh") === "zh" ? "控制系統" : "Control System"}</span>
               <span>RoboRIO 2.0</span>
             </div>
             <div className="flex justify-between">
-              <span>{t('zh') === 'zh' ? '程式語言' : 'Programming Language'}</span>
+              <span>
+                {t("zh") === "zh" ? "程式語言" : "Programming Language"}
+              </span>
               <span>Java</span>
             </div>
           </div>
@@ -55,16 +57,15 @@ export function Robots() {
 
   const PracticeRobotModal = () => (
     <Modal
-      isOpen={activeModal === 'practice'}
+      isOpen={activeModal === "practice"}
       onClose={() => setActiveModal(null)}
-      title={t('practiceRobot.title', content.robots)}
+      title={t("practiceRobot.title", content.robots)}
     >
       <div className="space-y-4">
         <p className="text-gray-600">
-          {t('zh') === 'zh' 
-            ? '我們的練習機器人用於日常訓練和技能提升，幫助團隊成員熟悉操作和維護。'
-            : 'Our practice robot is used for daily training and skill improvement, helping team members become familiar with operation and maintenance.'
-          }
+          {t("zh") === "zh"
+            ? "我們的練習機器人用於日常訓練和技能提升，幫助團隊成員熟悉操作和維護。"
+            : "Our practice robot is used for daily training and skill improvement, helping team members become familiar with operation and maintenance."}
         </p>
         <img
           src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
@@ -77,16 +78,15 @@ export function Robots() {
 
   const FutureProjectsModal = () => (
     <Modal
-      isOpen={activeModal === 'future'}
+      isOpen={activeModal === "future"}
       onClose={() => setActiveModal(null)}
-      title={t('futureProjects.title', content.robots)}
+      title={t("futureProjects.title", content.robots)}
     >
       <div className="space-y-4">
         <p className="text-gray-600">
-          {t('zh') === 'zh' 
-            ? '我們正在探索人工智能、機器學習和自動化技術在機器人中的應用。'
-            : 'We are exploring the application of artificial intelligence, machine learning, and automation technologies in robotics.'
-          }
+          {t("zh") === "zh"
+            ? "我們正在探索人工智能、機器學習和自動化技術在機器人中的應用。"
+            : "We are exploring the application of artificial intelligence, machine learning, and automation technologies in robotics."}
         </p>
         <img
           src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
@@ -102,10 +102,10 @@ export function Robots() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            {t('title', content.robots)}
+            {t("title", content.robots)}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t('subtitle', content.robots)}
+            {t("subtitle", content.robots)}
           </p>
         </div>
 
@@ -121,17 +121,17 @@ export function Robots() {
               <div className="flex items-center mb-3">
                 <Bot className="w-6 h-6 text-secondary mr-2" />
                 <h3 className="text-xl font-semibold text-primary">
-                  {t('robot2025.title', content.robots)}
+                  {t("robot2025.title", content.robots)}
                 </h3>
               </div>
               <p className="text-gray-600 mb-4">
-                {t('robot2025.description', content.robots)}
+                {t("robot2025.description", content.robots)}
               </p>
               <button
-                onClick={() => setActiveModal('2025')}
+                onClick={() => setActiveModal("2025")}
                 className="bg-secondary hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition-colors duration-300"
               >
-                {t('detailedSpecs', content.common)}
+                {t("detailedSpecs", content.common)}
               </button>
             </div>
           </div>
@@ -147,17 +147,17 @@ export function Robots() {
               <div className="flex items-center mb-3">
                 <Settings className="w-6 h-6 text-secondary mr-2" />
                 <h3 className="text-xl font-semibold text-primary">
-                  {t('practiceRobot.title', content.robots)}
+                  {t("practiceRobot.title", content.robots)}
                 </h3>
               </div>
               <p className="text-gray-600 mb-4">
-                {t('practiceRobot.description', content.robots)}
+                {t("practiceRobot.description", content.robots)}
               </p>
               <button
-                onClick={() => setActiveModal('practice')}
+                onClick={() => setActiveModal("practice")}
                 className="bg-secondary hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition-colors duration-300"
               >
-                {t('learnMore', content.common)}
+                {t("learnMore", content.common)}
               </button>
             </div>
           </div>
@@ -173,17 +173,17 @@ export function Robots() {
               <div className="flex items-center mb-3">
                 <Zap className="w-6 h-6 text-secondary mr-2" />
                 <h3 className="text-xl font-semibold text-primary">
-                  {t('futureProjects.title', content.robots)}
+                  {t("futureProjects.title", content.robots)}
                 </h3>
               </div>
               <p className="text-gray-600 mb-4">
-                {t('futureProjects.description', content.robots)}
+                {t("futureProjects.description", content.robots)}
               </p>
               <button
-                onClick={() => setActiveModal('future')}
+                onClick={() => setActiveModal("future")}
                 className="bg-secondary hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition-colors duration-300"
               >
-                {t('exploreFuture', content.common)}
+                {t("exploreFuture", content.common)}
               </button>
             </div>
           </div>
