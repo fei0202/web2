@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server/index.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["dist/**"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/index.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/server/index.ts"
+    }
+  ],
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "ADMIN_PASSWORD": "@admin_password"
+  }
+}
