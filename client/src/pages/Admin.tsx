@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Mail, Calendar, User, MessageSquare, ArrowLeft, LogOut } from 'lucide-react';
+import { Mail, Calendar, User, MessageSquare, ArrowLeft, LogOut, Newspaper, Users } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import { Link } from 'wouter';
 import { AdminLogin } from '../components/AdminLogin';
+import { NewsManagement } from '../components/NewsManagement';
 
 interface Contact {
   id: number;
@@ -20,6 +21,7 @@ export function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'contacts' | 'news'>('contacts');
 
   // Check for existing auth token on mount
   useEffect(() => {
@@ -150,7 +152,7 @@ export function Admin() {
               </Link>
             </div>
             <h1 className="text-xl font-semibold text-primary">
-              {t('zh') === 'zh' ? '聯絡訊息管理' : 'Contact Messages Admin'}
+              {t('zh') === 'zh' ? '管理後台' : 'Admin Dashboard'}
             </h1>
             <button
               onClick={handleLogout}
@@ -163,21 +165,57 @@ export function Admin() {
         </div>
       </div>
 
+      {/* Navigation Tabs */}
+      <div className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <nav className="flex space-x-8">
+            <button
+              onClick={() => setActiveTab('contacts')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'contacts'
+                  ? 'border-secondary text-secondary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center">
+                <Mail className="w-5 h-5 mr-2" />
+                {t('zh') === 'zh' ? '聯絡訊息' : 'Contact Messages'}
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('news')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'news'
+                  ? 'border-secondary text-secondary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center">
+                <Newspaper className="w-5 h-5 mr-2" />
+                {t('zh') === 'zh' ? '新聞管理' : 'News Management'}
+              </div>
+            </button>
+          </nav>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats */}
-        <div className="mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <Mail className="w-8 h-8 text-secondary mr-3" />
-              <div>
-                <p className="text-sm text-gray-600">
-                  {t('zh') === 'zh' ? '總聯絡訊息' : 'Total Contact Messages'}
-                </p>
-                <p className="text-2xl font-bold text-primary">{contacts?.length || 0}</p>
+        {activeTab === 'contacts' ? (
+          <>
+            {/* Stats */}
+            <div className="mb-8">
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center">
+                  <Mail className="w-8 h-8 text-secondary mr-3" />
+                  <div>
+                    <p className="text-sm text-gray-600">
+                      {t('zh') === 'zh' ? '總聯絡訊息' : 'Total Contact Messages'}
+                    </p>
+                    <p className="text-2xl font-bold text-primary">{contacts?.length || 0}</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
         {/* Contacts List */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -283,6 +321,10 @@ export function Admin() {
             </div>
           </div>
         </div>
+          </>
+        ) : (
+          <NewsManagement />
+        )}
       </div>
     </div>
   );

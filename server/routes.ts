@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSchema } from "@shared/schema";
+import { insertContactSchema, insertNewsSchema } from "@shared/schema";
 
 // Simple admin password - in production, use environment variables
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "FRC10390admin";
@@ -61,6 +61,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const contacts = await storage.getContacts();
       res.json(contacts);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // News routes
+  app.post("/api/news", requireAdmin, async (req, res) => {
+    try {
+      const newsData = insertNewsSchema.parse(req.body);
+      const news = await storage.createNews(newsData);
+      res.json({ success: true, message: "News created successfully", news });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  });
+
+  app.get("/api/news", async (req, res) => {
+    try {
+      const news = await storage.getNews();
+      res.json(news);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/news/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteNews(id);
+      res.json({ success: true, message: "News deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

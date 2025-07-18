@@ -6,6 +6,7 @@ import { Awards } from '../components/Awards';
 import { Sponsors } from '../components/Sponsors';
 import { Contact } from '../components/Contact';
 import { Footer } from '../components/Footer';
+import { NewsSection } from '../components/NewsSection';
 
 export function Home() {
   return (
@@ -13,6 +14,7 @@ export function Home() {
       <Header />
       <Hero />
       <About />
+      <NewsSection />
       <Robots />
       <Awards />
       <Sponsors />
