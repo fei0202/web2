@@ -130,7 +130,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="https://www.facebook.com/frc10390googirl"
+                href="https://www.facebook.com/www.smgsh.tc.edu.tw"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-300 hover:text-white transition-colors duration-300"
