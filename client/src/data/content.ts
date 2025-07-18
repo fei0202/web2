@@ -19,7 +19,7 @@ export const content: ContentData = {
     joinUs: { zh: "加入我們", en: "Join Us" },
   },
   about: {
-    title: { zh: "關於", en: "About" },
+    title: { zh: "關於我們", en: "About" },
     subtitle: {
       zh: "我們是一個充滿熱情的全女生FRC機器人團隊，致力於推動STEM教育和女性在科技領域的參與。",
       en: "We are a passionate all-female FRC robotics team dedicated to promoting STEM education and women's participation in technology.",
@@ -32,16 +32,16 @@ export const content: ContentData = {
       },
     },
     innovation: {
-      title: { zh: "創新思維", en: "Innovation" },
+      title: { zh: "媒體", en: "Media" },
       description: {
-        zh: "我們運用創新思維解決挑戰，將創意轉化為實際的機器人設計。",
+        zh: "相片與影片紀錄。",
         en: "We use innovative thinking to solve challenges and transform creativity into actual robot designs.",
       },
     },
     skills: {
-      title: { zh: "專業技能", en: "Professional Skills" },
+      title: { zh: "產品", en: "Product" },
       description: {
-        zh: "透過參與FRC比賽，我們學習工程設計、程式開發、專案管理等專業技能。",
+        zh: "我們所製作的團隊產品",
         en: "Through FRC competitions, we learn professional skills including engineering design, programming, and project management.",
       },
     },
@@ -55,7 +55,7 @@ export const content: ContentData = {
     robot2025: {
       title: { zh: "機器人", en: "Our Robot" },
       description: {
-        zh: "我們歷代研究的機器人。",
+        zh: "我們歷代研究出的機器人。",
         en: "Our latest robot, designed for the 2025 REEFSCAPE challenge.",
       },
     },

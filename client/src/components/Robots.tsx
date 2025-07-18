@@ -68,7 +68,7 @@ export function Robots() {
             : "FRC, the full name of which is FIRST Robotics Competition, is an international high school robotics competition organized by the American non-profit organization FIRST (For Inspiration and Recognition of Science and Technology). It combines science, engineering, programming and teamwork, and is known as the 'NBA of robotics.'Competition content: In January of each year, FIRST will officially release the theme and challenge of the year (similar to a special robot game). Participating teams must design, produce, program and test a full-size robot (maximum size is approximately 125 cm x 70 cm x 160 cm) that can complete the competition tasks within 6 weeks."}
         </p>
         <img
-          src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
+          src="https://www.google.com/imgres?q=frc%20championship&imgurl=https%3A%2F%2Fcommunity.firstinspires.org%2Fhubfs%2Ffirst-blog_community_cmpupdates2-024.jpg&imgrefurl=https%3A%2F%2Fcommunity.firstinspires.org%2Ffirst-championship-updates-2025-beyond&docid=-eW58fD79CJFzM&tbnid=mfBc_LDxWUottM&vet=12ahUKEwiE14fZ08aOAxU1bPUHHQFdAzQQM3oECB0QAA..i&w=1202&h=628&hcb=2&ved=2ahUKEwiE14fZ08aOAxU1bPUHHQFdAzQQM3oECB0QAA"
           alt="Practice robot"
           className="w-full rounded-lg"
         />
@@ -89,7 +89,7 @@ export function Robots() {
             : "We are exploring the application of artificial intelligence, machine learning, and automation technologies in robotics."}
         </p>
         <img
-          src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
+          src="https://scontent.ftpe8-4.fna.fbcdn.net/v/t39.30808-6/486174925_991914276379035_227942563990948035_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=GuCgBERaUxkQ7kNvwErKMKG&_nc_oc=AdmV1MsUIRio8v5ZcF0JrLRpLITxIqLNvvSnvCiT1bMe2VbWCg7eYd9QDiwE1cKA5FA&_nc_zt=23&_nc_ht=scontent.ftpe8-4.fna&_nc_gid=b7AeE3L_sKi5SkTa94YzEA&oh=00_AfRSCA9V_NDMWqj7Nx6by02zfN6eMiTc9hgHoRcM01m3sQ&oe=68804B58"
           alt="Future technology concepts"
           className="w-full rounded-lg"
         />

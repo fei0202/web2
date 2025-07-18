@@ -91,11 +91,6 @@ export function About() {
       title={t("innovation.title", content.about)}
     >
       <div className="space-y-4">
-        <p className="text-gray-600">
-          {t("zh") === "zh"
-            ? "我們的創新方法包含設計思維、快速原型製作和迭代改進。我們相信透過不斷的實驗和學習，能夠創造出更優秀的解決方案"
-            : "Our innovative approach includes design thinking, rapid prototyping, and iterative improvement. We believe that through continuous experimentation and learning, we can create better solutions."}
-        </p>
         <img
           src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
           alt="Innovation concepts"
