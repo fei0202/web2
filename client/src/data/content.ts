@@ -35,14 +35,14 @@ export const content: ContentData = {
       title: { zh: "媒體", en: "Media" },
       description: {
         zh: "相片與影片紀錄。",
-        en: "We use innovative thinking to solve challenges and transform creativity into actual robot designs.",
+        en: "Photo and video recording.",
       },
     },
     skills: {
       title: { zh: "產品", en: "Product" },
       description: {
         zh: "我們所製作的團隊產品",
-        en: "Through FRC competitions, we learn professional skills including engineering design, programming, and project management.",
+        en: "The team products we create.",
       },
     },
   },

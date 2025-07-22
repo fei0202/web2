@@ -93,4 +93,12 @@ export interface ContentData {
     exploreFuture: LanguageContent;
     close: LanguageContent;
   };
+  in: {
+    title: LanguageContent;
+    subtitle: LanguageContent;
+    worldRanking: LanguageContent;
+    regionalRanking: LanguageContent;
+    rookieAward: LanguageContent;
+    viewComplete: LanguageContent;
+  };
 }
